@@ -1,43 +1,47 @@
-package com.example.commerce.member.entity;
+package com.example.commerce.basket.entity;
 
 import com.example.commerce.admin.entity.Category;
 import com.example.commerce.admin.entity.Item;
+import com.example.commerce.member.entity.Member;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 
 @Data
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamicInsert
-public class Order {
+public class Basket {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	@Column(name = "id", nullable = false)
+	private Long id;
 
 	@OneToOne
 	@JoinColumn(name = "member_id")
-	private Member memberId;
+	private Member member;
 
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "item_id")
-	private Item productId;
+	private Item item;
 
-	private String status;
-	private LocalDateTime registerDate;
-	private LocalDateTime cancelDate;
+	private Integer amount;
+	private LocalDate registerDate;
+	private LocalDate updateDate;
 }

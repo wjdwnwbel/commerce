@@ -1,10 +1,13 @@
 package com.example.commerce.member.controller;
 
+import com.example.commerce.admin.entity.Item;
+import com.example.commerce.admin.service.ItemService;
 import com.example.commerce.member.dto.MemberDto;
 import com.example.commerce.member.model.MemberInput;
 import com.example.commerce.member.service.MemberService;
 import com.example.commerce.result.ServiceResult;
 import java.security.Principal;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberContoller {
 
 	private final MemberService memberService;
+	private final ItemService itemService;
 
 	@GetMapping("/member/loginSu")
 	public String loginSu() {
@@ -78,11 +83,18 @@ public class MemberContoller {
 		return "redirect:/member/info";
 	}
 
+	@GetMapping("/member/item/list")
+	public List<Item> list() {
+		List<Item> list = itemService.list();
 
-	@GetMapping("/member/updatePassword")
-	public String updatePassword() {
+		return list;
+	}
 
-		return "member/updatePassword";
+	@GetMapping("/member/item/search")
+	public List<Item> search(@RequestParam String name) {
+		List<Item> itemList = itemService.search(name);
+
+		return itemList;
 	}
 
 

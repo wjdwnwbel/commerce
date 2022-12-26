@@ -37,6 +37,7 @@ public class AdminController {
 	private final CategoryService categoryService;
 
 
+	// 회원 관리
 	@GetMapping("/admin/member/list")
 	public List<Member> list(Model model) {
 
@@ -62,8 +63,9 @@ public class AdminController {
 	}
 
 
+	// 상품 관리
 	@PostMapping("/admin/item/add")
-	public String add(Model model, ItemInput parameter) {
+	public String add(Model model, @RequestBody ItemInput parameter) {
 
 		ServiceResult result = itemService.add(parameter);
 		if(!result.isResult()) {
@@ -94,6 +96,7 @@ public class AdminController {
 	}
 
 
+	// 카테고리 관리
 	@GetMapping("/admin/category/list")
 	public List<Category> categoryList(Model model) {
 		List<Category> categories = categoryService.list();

@@ -4,6 +4,7 @@ import com.example.commerce.admin.entity.Category;
 import com.example.commerce.admin.entity.Item;
 import com.example.commerce.admin.model.ItemInput;
 import com.example.commerce.admin.param.ItemParam;
+import com.example.commerce.admin.repository.CategoryRepository;
 import com.example.commerce.admin.repository.ItemRepository;
 import com.example.commerce.admin.service.ItemService;
 import com.example.commerce.member.dto.MemberDto;
@@ -25,11 +26,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 	private final ItemRepository itemRepository;
+	private final CategoryRepository categoryRepository;
 
 	@Override
 	public ServiceResult add(ItemInput parameter) {
@@ -39,9 +42,15 @@ public class ItemServiceImpl implements ItemService {
 			return new ServiceResult(false, "같은 이름의 상품이 이미 존재합니다. ");
 		}
 
-		Category category = Category.builder()
-			.name(parameter.getCategory_name())
-			.build();
+		Optional<Category> optionalCategory = categoryRepository.findById(parameter.getCategory_id());
+		if(optionalCategory.isEmpty()) {
+			return new ServiceResult(false, "해당하는 카테고리가 없습니다. 다른 카테고리를 선택해주세요");
+		}
+
+		Category category = optionalCategory.get();
+		if(!category.getUsingYn()) {
+			return new ServiceResult(false, "사용할 수 없는 카테고리입니다. 다른 카테고리를 선택해주세요");
+		}
 
 		Item item = Item.builder()
 			.name(parameter.getName())
@@ -84,12 +93,20 @@ public class ItemServiceImpl implements ItemService {
 			return new ServiceResult(false, "해당 이름에 존재하는 상품이 없습니다. ");
 		}
 
-		int id = Math.toIntExact(deleteItem.get().getId());
+		long id = Math.toIntExact(deleteItem.get().getId());
 
 		itemRepository.deleteById(id);
 
 		return new ServiceResult(true);
 	}
+
+	@Transactional
+	public List<Item> search(String name) {
+		List<Item> itemList = itemRepository.findByNameContaining(name);
+
+		return itemList;
+	}
+
 
 	@Override
 	public List<Item> list() {

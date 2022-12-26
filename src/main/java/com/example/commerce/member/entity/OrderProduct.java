@@ -1,18 +1,20 @@
-package com.example.commerce.admin.entity;
+package com.example.commerce.member.entity;
 
+import com.example.commerce.admin.entity.Item;
 import java.time.LocalDateTime;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.bytebuddy.asm.Advice.Local;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 @Data
@@ -20,23 +22,24 @@ import org.hibernate.annotations.DynamicInsert;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
+public class OrderProduct {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = " category_id")
-	private Category category;
+	@OneToOne
+	@JoinColumn(name = " member_id")
+	private Member memberId;
 
-	private String name;
-	private String product;
-	private String image;
-	private Integer price;
-	private Integer amount;
+	@ManyToOne
+	@JoinColumn(name = " product_id")
+	private Item itemId;
+
+	private String status;
 	private LocalDateTime registerDate;
-	private LocalDateTime updateDate;
+	private LocalDateTime cancelDate;
+
 
 
 }

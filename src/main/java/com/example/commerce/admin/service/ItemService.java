@@ -20,4 +20,7 @@ public interface ItemService {
 	ServiceResult updateItem(ItemParam parameter);
 
 	ServiceResult deleteItem(String name);
+
+	List<Item> search(String name);
+
 }
